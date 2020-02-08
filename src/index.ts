@@ -1,7 +1,8 @@
+import * as core from "@actions/core";
 import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
 import { LoginForm, DailyReportForm } from "./form";
-import * as core from "@actions/core";
+
 
 const PREFIX = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
@@ -35,7 +36,8 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
     const cookieJar = new CookieJar();
     const client = got.extend({
         prefixUrl: PREFIX,
-        cookieJar
+        cookieJar,
+        retry: 5
     });
 
     const loginForm: LoginForm = {
