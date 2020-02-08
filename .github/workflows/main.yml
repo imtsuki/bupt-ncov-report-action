@@ -29,7 +29,8 @@ jobs:
           yarn --frozen-lockfile --non-interactive
       - name: Run Script
         run: |
-          yarn run start
+          yarn run build
+          node dist/index.js
         env:
           BUPT_USERNAME: ${{ secrets.BUPT_USERNAME }}
           BUPT_PASSWORD: ${{ secrets.BUPT_PASSWORD }}

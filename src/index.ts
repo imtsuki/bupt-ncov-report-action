@@ -60,6 +60,9 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
     console.log(await postFormData(client, formData));
 
     core.debug("今日疫情填报成功！");
-})();
+
+})().catch(err => {
+    core.setFailed(err);
+});
 
 
