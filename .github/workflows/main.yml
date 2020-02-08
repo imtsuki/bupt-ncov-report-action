@@ -34,3 +34,5 @@ jobs:
         env:
           BUPT_USERNAME: ${{ secrets.BUPT_USERNAME }}
           BUPT_PASSWORD: ${{ secrets.BUPT_PASSWORD }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}

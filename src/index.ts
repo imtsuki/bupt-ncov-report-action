@@ -22,7 +22,7 @@ async function getFormData(client: Got): Promise<DailyReportForm> {
         core.setFailed(`getFormData 请求返回了 ${response.statusCode}`);
     }
     if (response.body.indexOf("登录") != -1) {
-        core.setFailed("登录失败: 请检查用户名与密码是否正确");
+        core.setFailed("登录失败；请检查用户名与密码是否正确");
     }
     const newForm: DailyReportForm = JSON.parse(/var def = (\{.+\});/.exec(response.body)?.[1] ?? "");
     const oldForm: DailyReportForm = JSON.parse(/oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? "");
@@ -65,10 +65,31 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
 
     core.debug("正在提交今日疫情填报信息");
 
-    console.log(await postFormData(client, formData));
+    const postResult = await postFormData(client, formData);
 
     core.debug("今日疫情填报成功！");
 
+    const telegramChatId = process.env["TG_CHAT_ID"];
+    const telegramBotToken = process.env["TG_BOT_TOKEN"];
+
+    if (!!telegramChatId && !!telegramBotToken) {
+        const response = await got.post(
+            `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
+            {
+                json: {
+                    "chat_id": telegramChatId,
+                    "text": postResult,
+                    "parse_mode": "HTML"
+                }
+            }
+        );
+
+        const body = JSON.parse(response.body);
+
+        if (!body["ok"]) {
+            core.setFailed(`Telegram Bot 信息发送失败，返回：${body}`);
+        }
+    }
 })().catch(err => {
     core.setFailed(err);
 });
