@@ -43,7 +43,7 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
         password: process.env["BUPT_PASSWORD"]
     }
 
-    if (loginForm.username == null || loginForm.password == null) {
+    if (!(!!loginForm.username && !!loginForm.password)) {
         core.setFailed("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
