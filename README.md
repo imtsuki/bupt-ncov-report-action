@@ -8,7 +8,11 @@
 
 首先，点击上方绿色的 **Use this template**，使用这个模板创建你自己的 Repository；
 
-然后，在仓库 Setting 中的 Secrets 中设置以下信息：
+然后，在你自己的仓库 Settings 中的 Secrets 中设置以下信息：
 
 - `BUPT_USERNAME`: 你用来登录的学号；
 - `BUPT_PASSWORD`: 你用来登录的密码。
+
+## 检查结果
+
+无需任何设置。如果运行失败，GitHub 会向你的邮箱发送一封邮件。
