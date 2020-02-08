@@ -12,12 +12,15 @@ const POST_REPORT = "ncov/wap/default/save";
 async function login(client: Got, loginForm: LoginForm): Promise<void> {
     const response = await client.post(LOGIN, { form: loginForm });
     if (response.statusCode != 200) {
-        core.setFailed("无法登录; 登陆请求没有返回 200");
+        core.setFailed(`login 请求返回了 ${response.statusCode}`);
     }
 }
 
 async function getFormData(client: Got): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
+    if (response.statusCode != 200) {
+        core.setFailed(`getFormData 请求返回了 ${response.statusCode}`);
+    }
     if (response.body.indexOf("登录") != -1) {
         core.setFailed("登录失败: 请检查用户名与密码是否正确");
     }
@@ -29,6 +32,9 @@ async function getFormData(client: Got): Promise<DailyReportForm> {
 
 async function postFormData(client: Got, formData: DailyReportForm): Promise<string> {
     const response = await client.post(POST_REPORT, { form: formData });
+    if (response.statusCode != 200) {
+        core.setFailed(`postFormData 请求返回了 ${response.statusCode}`);
+    }
     return response.body;
 }
 
