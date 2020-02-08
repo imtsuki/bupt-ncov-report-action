@@ -1,0 +1,29 @@
+{
+  "name": "bupt-ncov-report-action",
+  "version": "0.1.0",
+  "description": "Automatically submit the 2019-nCoV report sheet of BUPT using GitHub Actions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imtsuki/bupt-ncov-report-action"
+  },
+  "author": "imtsuki",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "yarn run build && node dist/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.2",
+    "got": "^10.5.2",
+    "tough-cookie": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.0",
+    "@types/tough-cookie": "^2.3.6",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
+    "eslint": "^6.8.0",
+    "typescript": "^3.7.5"
+  }
+}
