@@ -4,19 +4,25 @@ import { CookieJar } from "tough-cookie";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form";
 
 
-const PREFIX = "https://app.bupt.edu.cn";
+const PREFIX_URL = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
-const GET_REPORT = "ncov/wap/default/index"
+const GET_REPORT = "ncov/wap/default/index";
 const POST_REPORT = "ncov/wap/default/save";
+const RETRY = 5;
 
-async function login(client: Got, loginForm: LoginForm): Promise<void> {
+async function login(
+    client: Got,
+    loginForm: LoginForm
+): Promise<void> {
     const response = await client.post(LOGIN, { form: loginForm });
     if (response.statusCode != 200) {
         core.setFailed(`login 请求返回了 ${response.statusCode}`);
     }
 }
 
-async function getDailyReportFormData(client: Got): Promise<DailyReportForm> {
+async function getDailyReportFormData(
+    client: Got
+): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
     if (response.statusCode != 200) {
         core.setFailed(`getFormData 请求返回了 ${response.statusCode}`);
@@ -48,9 +54,9 @@ async function postDailyReportFormData(
 (async (): Promise<void> => {
     const cookieJar = new CookieJar();
     const client = got.extend({
-        prefixUrl: PREFIX,
+        prefixUrl: PREFIX_URL,
         cookieJar,
-        retry: 5
+        retry: RETRY
     });
 
     const loginForm: LoginForm = {
@@ -62,7 +68,7 @@ async function postDailyReportFormData(
         core.setFailed("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
-    core.debug(`用户 ${loginForm.username} 登录中`);
+    core.debug(`用户登录中`);
 
     await login(client, loginForm);
 
@@ -93,12 +99,10 @@ async function postDailyReportFormData(
 
         const body = JSON.parse(response.body);
 
-        if (!body["ok"]) {
+        if (!body.ok) {
             core.setFailed(`Telegram Bot 信息发送失败，返回：${body}`);
         }
     }
 })().catch(err => {
     core.setFailed(err);
 });
-
-
