@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
-import { LoginForm, DailyReportForm } from "./form";
+import { LoginForm, DailyReportForm, DailyReportResponse } from "./form";
 
 
 const PREFIX = "https://app.bupt.edu.cn";
@@ -16,7 +16,7 @@ async function login(client: Got, loginForm: LoginForm): Promise<void> {
     }
 }
 
-async function getFormData(client: Got): Promise<DailyReportForm> {
+async function getDailyReportFormData(client: Got): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
     if (response.statusCode != 200) {
         core.setFailed(`getFormData 请求返回了 ${response.statusCode}`);
@@ -24,18 +24,25 @@ async function getFormData(client: Got): Promise<DailyReportForm> {
     if (response.body.indexOf("登录") != -1) {
         core.setFailed("登录失败；请检查用户名与密码是否正确");
     }
-    const newForm: DailyReportForm = JSON.parse(/var def = (\{.+\});/.exec(response.body)?.[1] ?? "");
-    const oldForm: DailyReportForm = JSON.parse(/oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? "");
+    const newForm: DailyReportForm = JSON.parse(
+        /var def = (\{.+\});/.exec(response.body)?.[1] ?? ""
+    );
+    const oldForm: DailyReportForm = JSON.parse(
+        /oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? ""
+    );
     Object.assign(oldForm, newForm);
     return oldForm;
 }
 
-async function postFormData(client: Got, formData: DailyReportForm): Promise<string> {
+async function postDailyReportFormData(
+    client: Got,
+    formData: DailyReportForm
+): Promise<DailyReportResponse> {
     const response = await client.post(POST_REPORT, { form: formData });
     if (response.statusCode != 200) {
         core.setFailed(`postFormData 请求返回了 ${response.statusCode}`);
     }
-    return response.body;
+    return JSON.parse(response.body);
 }
 
 (async (): Promise<void> => {
@@ -61,11 +68,11 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
 
     core.debug("正在获取前一天的疫情填报信息");
 
-    const formData = await getFormData(client);
+    const formData = await getDailyReportFormData(client);
 
     core.debug("正在提交今日疫情填报信息");
 
-    const postResult = await postFormData(client, formData);
+    const reportReponse = await postDailyReportFormData(client, formData);
 
     core.debug("今日疫情填报成功！");
 
@@ -78,7 +85,7 @@ async function postFormData(client: Got, formData: DailyReportForm): Promise<str
             {
                 json: {
                     "chat_id": telegramChatId,
-                    "text": postResult,
+                    "text": `今日填报结果：${reportReponse.m}`,
                     "parse_mode": "HTML"
                 }
             }

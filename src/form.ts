@@ -3,6 +3,12 @@ export interface LoginForm {
     password?: string;
 }
 
+export interface DailyReportResponse {
+    e: number;
+    m: string;
+    d: {};
+}
+
 export interface DailyReportForm {
     tw: string;
     sfcxtz: string;
