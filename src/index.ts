@@ -68,7 +68,7 @@ async function postDailyReportFormData(
         core.setFailed("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
-    core.debug(`用户登录中`);
+    core.debug("用户登录中");
 
     await login(client, loginForm);
 
@@ -80,7 +80,7 @@ async function postDailyReportFormData(
 
     const reportReponse = await postDailyReportFormData(client, formData);
 
-    core.debug("今日疫情填报成功！");
+    core.debug(`今日填报结果：${reportReponse.m}`);
 
     const telegramChatId = process.env["TG_CHAT_ID"];
     const telegramBotToken = process.env["TG_BOT_TOKEN"];
