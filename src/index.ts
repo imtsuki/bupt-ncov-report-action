@@ -80,7 +80,7 @@ async function postDailyReportFormData(
 
     const reportReponse = await postDailyReportFormData(client, formData);
 
-    core.debug(`今日填报结果：${reportReponse.m}`);
+    console.log(`今日填报结果：${reportReponse.m}`);
 
     const telegramChatId = process.env["TG_CHAT_ID"];
     const telegramBotToken = process.env["TG_BOT_TOKEN"];
