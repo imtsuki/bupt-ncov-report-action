@@ -16,7 +16,7 @@ async function login(
 ): Promise<void> {
     const response = await client.post(LOGIN, { form: loginForm });
     if (response.statusCode != 200) {
-        core.setFailed(`login 请求返回了 ${response.statusCode}`);
+        throw new Error(`login 请求返回了 ${response.statusCode}`);
     }
 }
 
@@ -25,10 +25,10 @@ async function getDailyReportFormData(
 ): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
     if (response.statusCode != 200) {
-        core.setFailed(`getFormData 请求返回了 ${response.statusCode}`);
+        throw new Error(`getFormData 请求返回了 ${response.statusCode}`);
     }
     if (response.body.indexOf("登录") != -1) {
-        core.setFailed("登录失败；请检查用户名与密码是否正确");
+        throw new Error("登录失败；请检查用户名与密码是否正确");
     }
     const newForm: DailyReportForm = JSON.parse(
         /var def = (\{.+\});/.exec(response.body)?.[1] ?? ""
@@ -46,7 +46,7 @@ async function postDailyReportFormData(
 ): Promise<DailyReportResponse> {
     const response = await client.post(POST_REPORT, { form: formData });
     if (response.statusCode != 200) {
-        core.setFailed(`postFormData 请求返回了 ${response.statusCode}`);
+        throw new Error(`postFormData 请求返回了 ${response.statusCode}`);
     }
     return JSON.parse(response.body);
 }
@@ -64,8 +64,9 @@ async function postDailyReportFormData(
         password: process.env["BUPT_PASSWORD"]
     }
 
+
     if (!(!!loginForm.username && !!loginForm.password)) {
-        core.setFailed("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
+        throw new Error("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
     core.debug("用户登录中");
@@ -100,9 +101,9 @@ async function postDailyReportFormData(
         const body = JSON.parse(response.body);
 
         if (!body.ok) {
-            core.setFailed(`Telegram Bot 信息发送失败，返回：${body}`);
+            throw new Error(`Telegram Bot 信息发送失败，返回：${body}`);
         }
     }
 })().catch(err => {
-    core.setFailed(err);
+    core.setFailed(err.message);
 });
