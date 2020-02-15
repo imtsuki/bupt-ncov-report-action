@@ -36,7 +36,24 @@ async function getDailyReportFormData(
     const oldForm: DailyReportForm = JSON.parse(
         /oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? ""
     );
+    // 前一天的地址
+    const province = oldForm.province;
+    const city = oldForm.city;
+    const area = oldForm.area;
+    const address = oldForm.address;
     Object.assign(oldForm, newForm);
+    // 强制覆盖一些字段
+    // 是否移动了位置？否
+    oldForm.ismoved = "0";
+    // 移动原因？空
+    oldForm.bztcyy = "";
+    // 是否移动了省份？否
+    oldForm.sfsfbh = "0";
+    // 覆盖昨天的地址
+    oldForm.province = province;
+    oldForm.city = city;
+    oldForm.area = area;
+    oldForm.address = address;
     return oldForm;
 }
 
@@ -44,7 +61,7 @@ async function postDailyReportFormData(
     client: Got,
     formData: DailyReportForm
 ): Promise<DailyReportResponse> {
-    const response = await client.post(POST_REPORT, { form: formData });
+    const response = await client.post(POST_REPORT, { json: formData });
     if (response.statusCode != 200) {
         throw new Error(`postFormData 请求返回了 ${response.statusCode}`);
     }
@@ -76,6 +93,7 @@ async function postDailyReportFormData(
     core.debug("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
+
 
     core.debug("正在提交今日疫情填报信息");
 
