@@ -11,13 +11,21 @@ const POST_REPORT = "ncov/wap/default/save";
 const RETRY = 5;
 
 async function login(
-    client: Got,
     loginForm: LoginForm
-): Promise<void> {
+): Promise<Got> {
+    const cookieJar = new CookieJar();
+    const client = got.extend({
+        prefixUrl: PREFIX_URL,
+        cookieJar,
+        retry: RETRY
+    });
+
     const response = await client.post(LOGIN, { form: loginForm });
     if (response.statusCode != 200) {
         throw new Error(`login 请求返回了 ${response.statusCode}`);
     }
+
+    return client;
 }
 
 async function getDailyReportFormData(
@@ -45,9 +53,9 @@ async function getDailyReportFormData(
     // 强制覆盖一些字段
     // 是否移动了位置？否
     oldForm.ismoved = "0";
-    // 移动原因？空
+    // 不在同城原因？空
     oldForm.bztcyy = "";
-    // 是否移动了省份？否
+    // 是否省份不合？否
     oldForm.sfsfbh = "0";
     // 覆盖昨天的地址
     oldForm.province = province;
@@ -69,18 +77,10 @@ async function postDailyReportFormData(
 }
 
 (async (): Promise<void> => {
-    const cookieJar = new CookieJar();
-    const client = got.extend({
-        prefixUrl: PREFIX_URL,
-        cookieJar,
-        retry: RETRY
-    });
-
     const loginForm: LoginForm = {
         username: process.env["BUPT_USERNAME"],
         password: process.env["BUPT_PASSWORD"]
     }
-
 
     if (!(!!loginForm.username && !!loginForm.password)) {
         throw new Error("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
@@ -88,12 +88,11 @@ async function postDailyReportFormData(
 
     core.debug("用户登录中");
 
-    await login(client, loginForm);
+    const client = await login(loginForm);
 
     core.debug("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
-
 
     core.debug("正在提交今日疫情填报信息");
 
@@ -123,5 +122,8 @@ async function postDailyReportFormData(
         }
     }
 })().catch(err => {
-    core.setFailed(err.message);
+    if (err instanceof Error) {
+        console.log(err.stack);
+        core.setFailed(err.message);
+    }
 });
