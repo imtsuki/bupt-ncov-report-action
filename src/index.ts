@@ -44,12 +44,36 @@ async function getDailyReportFormData(
     const oldForm: DailyReportForm = JSON.parse(
         /oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? ""
     );
+
+    const geo = JSON.parse(oldForm.geo_api_info);
+    if (geo === undefined) {
+        throw new Error("昨天的信息不完整；请手动填报一天后继续使用本脚本");
+    }
+
     // 前一天的地址
-    const province = oldForm.province;
-    const city = oldForm.city;
-    const area = oldForm.area;
-    const address = oldForm.address;
+    const province = geo.addressComponent.province;
+    let city = geo.addressComponent.city;
+    if (geo.addressComponent.city.trim() === "" && ["北京市", "上海市", "重庆市", "天津市"].indexOf(province) > -1) {
+        city = geo.addressComponent.province;
+    } else {
+        city = geo.addressComponent.city;
+    }
+    const area = geo.addressComponent.province + " "
+        + geo.addressComponent.city + " "
+        + geo.addressComponent.district;
+    const address = geo.formattedAddress;
+
     Object.assign(oldForm, newForm);
+
+    delete oldForm.jrdqtlqk;
+    delete oldForm.jrdqjcqk;
+
+    // 覆盖昨天的地址
+    oldForm.province = province;
+    oldForm.city = city;
+    oldForm.area = area;
+    oldForm.address = address;
+
     // 强制覆盖一些字段
     // 是否移动了位置？否
     oldForm.ismoved = "0";
@@ -57,11 +81,7 @@ async function getDailyReportFormData(
     oldForm.bztcyy = "";
     // 是否省份不合？否
     oldForm.sfsfbh = "0";
-    // 覆盖昨天的地址
-    oldForm.province = province;
-    oldForm.city = city;
-    oldForm.area = area;
-    oldForm.address = address;
+
     return oldForm;
 }
 
@@ -69,7 +89,7 @@ async function postDailyReportFormData(
     client: Got,
     formData: DailyReportForm
 ): Promise<DailyReportResponse> {
-    const response = await client.post(POST_REPORT, { json: formData });
+    const response = await client.post(POST_REPORT, { form: formData });
     if (response.statusCode != 200) {
         throw new Error(`postFormData 请求返回了 ${response.statusCode}`);
     }

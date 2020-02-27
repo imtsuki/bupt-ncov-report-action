@@ -46,4 +46,6 @@ export interface DailyReportForm {
     ismoved: string;
     id: number;
     gwszdd: string;
+    jrdqtlqk: Array<string>;
+    jrdqjcqk: Array<string>;
 }
