@@ -45,10 +45,11 @@ async function getDailyReportFormData(
         /oldInfo: (\{.+\}),/.exec(response.body)?.[1] ?? ""
     );
 
-    const geo = JSON.parse(oldForm.geo_api_info);
-    if (geo === undefined) {
+    if (oldForm.geo_api_info === undefined) {
         throw new Error("昨天的信息不完整；请手动填报一天后继续使用本脚本");
     }
+
+    const geo = JSON.parse(oldForm.geo_api_info);
 
     // 前一天的地址
     const province = geo.addressComponent.province;
