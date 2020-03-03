@@ -10,13 +10,14 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "start": "yarn run build && node dist/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
     "@actions/core": "^1.2.2",
     "got": "^10.5.2",
-    "tough-cookie": "^3.0.1"
+    "tough-cookie": "^3.0.1",
+    "ts-node": "^8.6.2"
   },
   "devDependencies": {
     "@types/node": "^13.7.0",
