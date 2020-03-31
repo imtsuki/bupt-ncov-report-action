@@ -149,7 +149,6 @@ async function postDailyReportFormData(
             }
         );
 
-
         const body = JSON.parse(response.body);
 
         if (!body.ok) {
