@@ -109,19 +109,19 @@ async function postDailyReportFormData(
         throw new Error("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
-    core.debug("用户登录中");
+    console.log("用户登录中");
 
     const client = await login(loginForm);
 
     await sleep(randomBetween(1000, 3000));
 
-    core.debug("正在获取前一天的疫情填报信息");
+    console.log("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
 
     await sleep(randomBetween(1000, 3000));
 
-    core.debug("正在提交今日疫情填报信息");
+    console.log("正在提交今日疫情填报信息");
 
     const reportReponse = await postDailyReportFormData(client, formData);
 
