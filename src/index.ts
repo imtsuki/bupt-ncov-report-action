@@ -10,7 +10,8 @@ const PREFIX_URL = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
 const GET_REPORT = "ncov/wap/default/index";
 const POST_REPORT = "ncov/wap/default/save";
-const RETRY = 20;
+const RETRY = 100;
+const TIMEOUT = 2000;
 
 async function login(
     loginForm: LoginForm
@@ -20,7 +21,7 @@ async function login(
         prefixUrl: PREFIX_URL,
         cookieJar,
         retry: RETRY,
-        timeout: 2000,
+        timeout: TIMEOUT,
     });
 
     const response = await client.post(LOGIN, { form: loginForm });
