@@ -5,7 +5,6 @@ import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form";
 import { sleep, randomBetween } from "./utils";
 
-
 const PREFIX_URL = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
 const GET_REPORT = "ncov/wap/default/index";
