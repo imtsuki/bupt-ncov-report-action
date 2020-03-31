@@ -10,7 +10,7 @@ const PREFIX_URL = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
 const GET_REPORT = "ncov/wap/default/index";
 const POST_REPORT = "ncov/wap/default/save";
-const RETRY = 2;
+const RETRY = 20;
 
 async function login(
     loginForm: LoginForm
@@ -20,7 +20,7 @@ async function login(
         prefixUrl: PREFIX_URL,
         cookieJar,
         retry: RETRY,
-        timeout: 5000,
+        timeout: 2000,
     });
 
     const response = await client.post(LOGIN, { form: loginForm });
@@ -114,13 +114,13 @@ async function postDailyReportFormData(
 
     const client = await login(loginForm);
 
-    await sleep(randomBetween(10000, 20000));
+    await sleep(randomBetween(1000, 2000));
 
     console.log("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
 
-    await sleep(randomBetween(10000, 20000));
+    await sleep(randomBetween(1000, 2000));
 
     console.log("正在提交今日疫情填报信息");
 
