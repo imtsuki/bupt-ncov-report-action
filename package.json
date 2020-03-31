@@ -16,10 +16,12 @@
   "dependencies": {
     "@actions/core": "^1.2.2",
     "got": "^10.5.2",
+    "node-telegram-bot-api": "^0.40.0",
     "tough-cookie": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^13.7.0",
+    "@types/node-telegram-bot-api": "^0.40.2",
     "@types/tough-cookie": "^2.3.6",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",

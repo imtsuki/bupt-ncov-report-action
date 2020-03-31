@@ -1,7 +1,9 @@
 import * as core from "@actions/core";
 import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
+import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form";
+import { sleep, randomBetween } from "./utils";
 
 
 const PREFIX_URL = "https://app.bupt.edu.cn";
@@ -111,9 +113,13 @@ async function postDailyReportFormData(
 
     const client = await login(loginForm);
 
+    await sleep(randomBetween(1000, 3000));
+
     core.debug("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
+
+    await sleep(randomBetween(1000, 3000));
 
     core.debug("正在提交今日疫情填报信息");
 
@@ -125,6 +131,12 @@ async function postDailyReportFormData(
     const telegramBotToken = process.env["TG_BOT_TOKEN"];
 
     if (!!telegramChatId && !!telegramBotToken) {
+        const bot = new TelegramBot(telegramBotToken);
+        bot.sendMessage(
+            telegramChatId,
+            `今日填报结果：${reportReponse.m}`,
+            { "parse_mode": "HTML" }
+        );
         const response = await got.post(
             `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
             {
@@ -143,8 +155,25 @@ async function postDailyReportFormData(
         }
     }
 })().catch(err => {
+    const chatId = process.env["TG_CHAT_ID"];
+    const botToken = process.env["TG_BOT_TOKEN"];
+
+    if (!!chatId && !!botToken && err instanceof Error) {
+        const bot = new TelegramBot(botToken);
+        bot.sendMessage(
+            chatId,
+            `填报失败：${err.message}`,
+            { "parse_mode": "HTML" }
+        );
+        console.log(err);
+    } else {
+        throw err;
+    }
+}).catch(err => {
     if (err instanceof Error) {
         console.log(err.stack);
         core.setFailed(err.message);
+    } else {
+        core.setFailed(err);
     }
 });
