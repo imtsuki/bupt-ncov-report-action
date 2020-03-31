@@ -5,12 +5,12 @@ import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form";
 import { sleep, randomBetween } from "./utils";
 
-
 const PREFIX_URL = "https://app.bupt.edu.cn";
 const LOGIN = "uc/wap/login/check";
 const GET_REPORT = "ncov/wap/default/index";
 const POST_REPORT = "ncov/wap/default/save";
-const RETRY = 5;
+const RETRY = 100;
+const TIMEOUT = 2000;
 
 async function login(
     loginForm: LoginForm
@@ -19,7 +19,8 @@ async function login(
     const client = got.extend({
         prefixUrl: PREFIX_URL,
         cookieJar,
-        retry: RETRY
+        retry: RETRY,
+        timeout: TIMEOUT,
     });
 
     const response = await client.post(LOGIN, { form: loginForm });
@@ -109,19 +110,19 @@ async function postDailyReportFormData(
         throw new Error("无法登录；请在仓库 Settings 的 Secrets 栏填写 BUPT_USERNAME 与 BUPT_PASSWORD");
     }
 
-    core.debug("用户登录中");
+    console.log("用户登录中");
 
     const client = await login(loginForm);
 
-    await sleep(randomBetween(1000, 3000));
+    await sleep(randomBetween(1000, 2000));
 
-    core.debug("正在获取前一天的疫情填报信息");
+    console.log("正在获取前一天的疫情填报信息");
 
     const formData = await getDailyReportFormData(client);
 
-    await sleep(randomBetween(1000, 3000));
+    await sleep(randomBetween(1000, 2000));
 
-    core.debug("正在提交今日疫情填报信息");
+    console.log("正在提交今日疫情填报信息");
 
     const reportReponse = await postDailyReportFormData(client, formData);
 
