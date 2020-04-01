@@ -128,32 +128,16 @@ async function postDailyReportFormData(
 
     console.log(`今日填报结果：${reportReponse.m}`);
 
-    const telegramChatId = process.env["TG_CHAT_ID"];
-    const telegramBotToken = process.env["TG_BOT_TOKEN"];
+    const chatId = process.env["TG_CHAT_ID"];
+    const botToken = process.env["TG_BOT_TOKEN"];
 
-    if (!!telegramChatId && !!telegramBotToken) {
-        const bot = new TelegramBot(telegramBotToken);
-        bot.sendMessage(
-            telegramChatId,
+    if (!!chatId && !!botToken) {
+        const bot = new TelegramBot(botToken);
+        await bot.sendMessage(
+            chatId,
             `今日填报结果：${reportReponse.m}`,
-            { "parse_mode": "HTML" }
+            { "parse_mode": "Markdown" }
         );
-        const response = await got.post(
-            `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
-            {
-                json: {
-                    "chat_id": telegramChatId,
-                    "text": `今日填报结果：${reportReponse.m}`,
-                    "parse_mode": "HTML"
-                }
-            }
-        );
-
-        const body = JSON.parse(response.body);
-
-        if (!body.ok) {
-            throw new Error(`Telegram Bot 信息发送失败，返回：${body}`);
-        }
     }
 })().catch(err => {
     const chatId = process.env["TG_CHAT_ID"];
@@ -163,8 +147,8 @@ async function postDailyReportFormData(
         const bot = new TelegramBot(botToken);
         bot.sendMessage(
             chatId,
-            `填报失败：${err.message}`,
-            { "parse_mode": "HTML" }
+            `填报失败：\`${err.message}\``,
+            { "parse_mode": "Markdown" }
         );
         console.log(err);
     } else {
