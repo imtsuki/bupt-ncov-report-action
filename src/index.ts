@@ -133,11 +133,12 @@ async function postDailyReportFormData(
 
     if (!!telegramChatId && !!telegramBotToken) {
         const bot = new TelegramBot(telegramBotToken);
-        bot.sendMessage(
+        const resp = await bot.sendMessage(
             telegramChatId,
             `今日填报结果：${reportReponse.m}`,
             { "parse_mode": "HTML" }
         );
+        console.log(resp);
         const response = await got.post(
             `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
             {
