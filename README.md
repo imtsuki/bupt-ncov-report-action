@@ -1,6 +1,8 @@
 # bupt-ncov-report-action
 
-使用 GitHub Actions 自动填报北邮 2019-nCoV 疫情信息。
+使用 GitHub Actions 自动填报北邮 COVID-19 疫情信息。
+
+![Telegram](img/telegram.jpg)
 
 这个 Action 会自动在北京时间的每天 8:00 AM 进行填报。
 
@@ -35,7 +37,7 @@
 ```yml
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
 ```
 
 格式是标准的 cron 格式，第一个数字代表分钟，第二个数字代表小时。例如，`0 1 * * *` 表示在每天
