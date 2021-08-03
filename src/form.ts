@@ -10,6 +10,15 @@ export interface DailyReportResponse {
 }
 
 export interface DailyReportForm {
+    jhfjrq: string;
+    jhfjjtgj: string;
+    jhfjhbcc:string;
+    szcs:string;
+    zgfxdq:string;
+    mjry:string;
+    csmjry:string;
+    ymjzxgqk:string;
+    xwxgymjzqk:string;
     tw: string;
     sfcxtz: string;
     sfjcbh: string;
@@ -46,6 +55,11 @@ export interface DailyReportForm {
     ismoved: string;
     id: number;
     gwszdd: string;
-    jrdqtlqk: Array<string>;
-    jrdqjcqk: Array<string>;
+    jcqzrq:string;
+    sfjcqz:string;
+    sfsqhzjkk:number;
+    sqhzjkkys:string;
+    sfyqjzgc:string;
+    jrsfqzys:string;
+    jrsfqzfy:string
 }
