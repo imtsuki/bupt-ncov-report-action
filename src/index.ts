@@ -69,8 +69,8 @@ async function getDailyReportFormData(
 
     Object.assign(oldForm, newForm);
 
-    delete oldForm.jrdqtlqk;
-    delete oldForm.jrdqjcqk;
+    // delete oldForm.jrdqtlqk;
+    // delete oldForm.jrdqjcqk;
 
     // 覆盖昨天的地址
     oldForm.province = province;
