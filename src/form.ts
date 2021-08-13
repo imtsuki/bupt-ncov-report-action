@@ -10,6 +10,17 @@ export interface DailyReportResponse {
 }
 
 export interface DailyReportForm {
+    ismoved: string;
+    jhfjrq: string;
+    jhfjjtgj: string;
+    jhfjhbcc: string;
+    szgj: string;
+    szcs: string;
+    zgfxdq: string;
+    mjry: string;
+    csmjry: string;
+    ymjzxgqk: string;
+    xwxgymjzqk: string;
     tw: string;
     sfcxtz: string;
     sfjcbh: string;
@@ -38,14 +49,15 @@ export interface DailyReportForm {
     xjzd: string;
     jcwhryfs: string;
     jchbryfs: string;
-    szgj: string;
+    szsqsfybl: string;
+    sfygtjzzfj: number;
+    gtjzzfjsj: string;
+    sfjzxgym: string;
+    sfjzdezxgym: string;
     jcjg: string;
+    created_uid: number;
+    date: string;
     uid: string;
     created: number;
-    date: string;
-    ismoved: string;
     id: number;
-    gwszdd: string;
-    jrdqtlqk: Array<string>;
-    jrdqjcqk: Array<string>;
 }
