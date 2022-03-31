@@ -1,6 +1,15 @@
-# bupt-ncov-report-action
+<h1 align="center" style="border-bottom: none">
+  bupt-ncov-report-action
+</h1>
 
-使用 GitHub Actions 自动填报北邮 COVID-19 疫情信息。
+<p align="center">
+  使用 GitHub Actions 自动填报北邮 COVID-19 疫情信息。
+</p>
+
+<p align="center">
+  <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/stars/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Stars"></a>
+  <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/forks/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Forks"></a>
+</p>
 
 ![Telegram](img/telegram.jpg)
 
@@ -8,14 +17,36 @@
 
 为了防止网络波动造成的失败，会间隔十分钟尝试六次。
 
+支持最新的 OAuth 登录。
+
 ## 使用方法
 
-首先，点击上方绿色的 **Use this template**，使用这个模板创建你自己的 Repository；
+### 方法一（Use this template）
+
+最简单的方法，是点击上方绿色的 **Use this template**，使用这个模板创建你自己的 Repository：
 
 然后，在你自己仓库的 Settings 的 Secrets 中设置以下信息：
 
 - `BUPT_USERNAME`: 你用来登录的学号；
 - `BUPT_PASSWORD`: 你用来登录的密码。
+
+这种方法的缺点是无法同步上游的更新。
+
+### 方法二（Fork）
+
+**Use this template** 并不会自动追踪该仓库的后续更新。
+
+第二种方法是，点击右上角的 **Fork** 按钮来创建自己的 Repository。注意在这种情况下，你可能需要在 Settings 中手动开启 GitHub Actions 的运行，因为在 Fork 的仓库中，这个开关会默认关闭。
+
+![Actions Setting](img/actions-setting.png)
+
+若需要更新脚本，可以点击页面上方的 **Fetch upstream** 按钮：
+
+![Fetch Upstream](img/fetch-upstream-drop-down.png)
+
+然后点击 **Fetch and Merge**：
+
+![Fetch and Merge](img/fetch-and-merge-button.png)
 
 ## 检查结果
 
