@@ -1,6 +1,10 @@
 export interface LoginForm {
     username?: string;
     password?: string;
+    submit?: string;
+    type?: string;
+    _eventId?: string;
+    execution?: string;
 }
 
 export interface DailyReportResponse {
