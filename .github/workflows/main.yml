@@ -10,24 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
         with:
-          node-version: '12.x'
+          node-version: '14'
       - name: Cache NPM dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
       - name: Install Dependencies
         run: |
-          npm install -g yarn
-          yarn --frozen-lockfile --non-interactive
+          npm install
       - name: Run Script
         run: |
-          yarn run ts-node src/index.ts
+          npm run start
         env:
           BUPT_USERNAME: ${{ secrets.BUPT_USERNAME }}
           BUPT_PASSWORD: ${{ secrets.BUPT_PASSWORD }}
