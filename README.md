@@ -61,6 +61,14 @@
 - `TG_BOT_TOKEN`: 你的 Bot 的 Token；
 - `TG_CHAT_ID`: 你和 Bot 的 Chat ID。
 
+### `Timeout awaiting 'request' for 2000ms` 错误
+
+这一般是 GitHub Actions 连接学校服务器过程中网络不稳定导致的。代码中默认以 2000ms 的间隔重试 100 次（见 `src/index.ts`）。这种情况下，你可以手动重试，或更改重试的间隔和次数，或者将该脚本部署到 Gitee 等国内服务上。
+
+### 表单字段更新
+
+有时，填报系统中的表单字段会有更新。由于该脚本会获取前一天的填报内容并提交，在某些情况下可能会出现错误。此时，你需要手动填报一次。如果第二天依然出错，请开 issue。
+
 ## 高级设置
 
 你可以在 `.github/workflows/main.yml` 中来设置每天运行的时间：
