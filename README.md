@@ -7,6 +7,10 @@
 </p>
 
 <p align="center">
+  <strong>*旧版脚本用户（2022-03-31 之前），请更新以支持最新的 OAuth 登录。</strong>
+</p>
+
+<p align="center">
   <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/stars/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Stars"></a>
   <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/forks/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Forks"></a>
 </p>
@@ -16,8 +20,6 @@
 这个 Action 会自动在北京时间的每天 8:00 AM 进行填报。
 
 为了防止网络波动造成的失败，会间隔十分钟尝试六次。
-
-旧版脚本用户（2022-03-31 之前），请更新以支持最新的 OAuth 登录。
 
 ## 使用方法
 
