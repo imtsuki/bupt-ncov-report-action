@@ -2,34 +2,40 @@ name: Automatically submit the 2019-nCoV report sheet of BUPT
 
 on:
   schedule:
-    - cron: "0/10 0 * * *"
+    - cron: '0/10 0 * * *'
   push:
+  pull_request:
 
 jobs:
   checker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
         with:
-          node-version: '12.x'
-      - name: Cache NPM dependencies
-        uses: actions/cache@v1
+          node-version: '16'
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
         with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.OS }}-npm-cache
-      - name: Install Dependencies
-        run: |
-          npm install -g yarn
-          yarn --frozen-lockfile --non-interactive
+            ${{ runner.os }}-
+
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+          run_install: true
+
       - name: Run Script
         run: |
-          yarn run ts-node src/index.ts
+          pnpm start
         env:
           BUPT_USERNAME: ${{ secrets.BUPT_USERNAME }}
           BUPT_PASSWORD: ${{ secrets.BUPT_PASSWORD }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          NTBA_FIX_319: 1
