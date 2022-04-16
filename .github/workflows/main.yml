@@ -39,3 +39,4 @@ jobs:
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           NTBA_FIX_319: 1
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
