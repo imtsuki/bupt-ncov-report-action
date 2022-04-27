@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  使用 GitHub Actions 自动填报北邮 COVID-19 疫情信息。
+  使用 GitHub Actions 自动填报 COVID-19 疫情信息。
 </p>
 
 <p align="center">
