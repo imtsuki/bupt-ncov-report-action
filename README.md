@@ -9,6 +9,9 @@
 <p align="center">
   <strong>*旧版脚本用户（2022-03-31 之前），请更新以支持最新的 OAuth 登录。</strong>
 </p>
+<p align="center">
+  <strong>* (2022-08-05更新)：支持server酱和PushDeer推送。</strong>
+</p>
 
 <p align="center">
   <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/stars/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Stars"></a>
@@ -62,6 +65,18 @@
 
 - `TG_BOT_TOKEN`: 你的 Bot 的 Token；
 - `TG_CHAT_ID`: 你和 Bot 的 Chat ID。
+
+### ServerChan
+
+[server酱](https://sct.ftqq.com/) 可以把填报结果推送到微信服务号或者企业微信内，你可以设置如下Secrets发送结果：
+
+- `SERVERCHAN_KEY`: 你的ServerChan Key
+
+### PushDeer
+
+通过 [pushDeer](http://www.pushdeer.com/) 直接推送到手机通知上，iOS下使用App Clips轻应用，体验非常丝滑：
+
+- `PUSHDEER_KEY`: 你的Push Deer的Key
 
 ### `Timeout awaiting 'request' for 2000ms` 错误
 

@@ -3,7 +3,7 @@ import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
 import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form.js";
-import { sleep, randomBetween } from "./utils.js";
+import { sleep, randomBetween, pushNotice } from "./utils.js";
 
 const LOGIN = "https://auth.bupt.edu.cn/authserver/login";
 const GET_REPORT = "https://app.bupt.edu.cn/ncov/wap/default/index";
@@ -55,13 +55,10 @@ async function login(
         throw new Error(`login 请求返回了 ${response.statusCode}，应是 302`);
     }
 
-
     return client;
 }
 
-async function getDailyReportFormData(
-    client: Got
-): Promise<DailyReportForm> {
+async function getDailyReportFormData(client: Got): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
     if (response.statusCode != 200) {
         throw new Error(`getFormData 请求返回了 ${response.statusCode}`);
@@ -152,38 +149,28 @@ async function postDailyReportFormData(
     const reportReponse = await postDailyReportFormData(client, formData);
 
     console.log(`今日填报结果：${reportReponse.m}`);
-
-    const chatId = process.env["TG_CHAT_ID"];
-    const botToken = process.env["TG_BOT_TOKEN"];
-
-    if (!!chatId && !!botToken && reportReponse.m !== "今天已经填报了") {
-        const bot = new TelegramBot(botToken);
-        await bot.sendMessage(
-            chatId,
-            `今日填报结果：${reportReponse.m}`,
-            { "parse_mode": "Markdown" }
+    
+    if (reportReponse.m !== "今天已经填报了") {
+        await pushNotice(
+            `bupt-ncov:填报成功`,
+            `
+    今日填报结果：${reportReponse.m}
+    上次填报时间：${formData.date}
+    上次填报地点：${formData.area}
+`
         );
     }
-})().catch(err => {
-    const chatId = process.env["TG_CHAT_ID"];
-    const botToken = process.env["TG_BOT_TOKEN"];
-
-    if (!!chatId && !!botToken && err instanceof Error) {
-        const bot = new TelegramBot(botToken);
-        bot.sendMessage(
-            chatId,
-            `填报失败：\`${err.message}\``,
-            { "parse_mode": "Markdown" }
-        );
-        console.log(err);
-    } else {
-        throw err;
-    }
-}).catch(err => {
-    if (err instanceof Error) {
-        console.log(err.stack);
-        core.setFailed(err.message);
-    } else {
-        core.setFailed(err);
-    }
-});
+})()
+    .catch(async (err) => {
+        if (!!(await pushNotice(`bupt-ncov:填报失败`, `${err.message}`))) {
+            throw err;
+        }
+    })
+    .catch((err) => {
+        if (err instanceof Error) {
+            console.log(err.stack);
+            core.setFailed(err.message);
+        } else {
+            core.setFailed(err);
+        }
+    });
