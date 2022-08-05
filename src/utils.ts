@@ -31,11 +31,11 @@ export async function pushNotice(title: string, desp: string): Promise<boolean> 
     }
     if (!!serverChanBotApiKey) {
         const serverChanTurbo = new ServerChanTurbo(serverChanBotApiKey);
-        serverChanTurbo.send(title, desp);
+        await serverChanTurbo.send(title, desp);
     }
     if (!!pushDearPushKey) {
         const pushDeer = new PushDeer(pushDearPushKey);
-        pushDeer.send(title, desp, "text");
+        await pushDeer.send(title, desp, "text");
     } else {
         console.log(title+"\n"+desp);
         return false;
