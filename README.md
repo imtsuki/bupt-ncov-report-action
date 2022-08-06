@@ -63,6 +63,18 @@
 - `TG_BOT_TOKEN`: 你的 Bot 的 Token；
 - `TG_CHAT_ID`: 你和 Bot 的 Chat ID。
 
+### ServerChan
+
+[Server 酱](https://sct.ftqq.com/) 可以把填报结果推送到微信服务号或者企业微信内。你可以设置如下 Secret 发送结果：
+
+- `SERVERCHAN_KEY`: 你的 SendKey
+
+### PushDeer
+
+[PushDeer](http://www.pushdeer.com/) 可以推送至 iOS 下的 App Clip 中，无需安装额外应用：
+
+- `PUSHDEER_KEY`: 你的 PushDeer 的 Key
+
 ### `Timeout awaiting 'request' for 2000ms` 错误
 
 这一般是 GitHub Actions 连接学校服务器过程中网络不稳定导致的。代码中默认以 2000ms 的间隔重试 100 次（见 `src/index.ts`）。这种情况下，你可以手动重试，或更改重试的间隔和次数，或者将该脚本部署到 Gitee 等国内服务上。

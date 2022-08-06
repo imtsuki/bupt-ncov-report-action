@@ -1,9 +1,9 @@
 import * as core from "@actions/core";
 import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
-import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form.js";
 import { sleep, randomBetween } from "./utils.js";
+import { pushNotification, isPushServicesConfigured } from "./push.js";
 
 const LOGIN = "https://auth.bupt.edu.cn/authserver/login";
 const GET_REPORT = "https://app.bupt.edu.cn/ncov/wap/default/index";
@@ -54,7 +54,6 @@ async function login(
     if (response.statusCode != 302) {
         throw new Error(`login 请求返回了 ${response.statusCode}，应是 302`);
     }
-
 
     return client;
 }
@@ -153,33 +152,24 @@ async function postDailyReportFormData(
 
     console.log(`今日填报结果：${reportReponse.m}`);
 
-    const chatId = process.env["TG_CHAT_ID"];
-    const botToken = process.env["TG_BOT_TOKEN"];
-
-    if (!!chatId && !!botToken && reportReponse.m !== "今天已经填报了") {
-        const bot = new TelegramBot(botToken);
-        await bot.sendMessage(
-            chatId,
-            `今日填报结果：${reportReponse.m}`,
-            { "parse_mode": "Markdown" }
+    if (isPushServicesConfigured() && reportReponse.m !== "今天已经填报了") {
+        await pushNotification(
+            `填报成功`,
+            `
+    今日填报结果：${reportReponse.m}
+    上次填报时间：${formData.date}
+    上次填报地点：${formData.area}
+`
         );
     }
-})().catch(err => {
-    const chatId = process.env["TG_CHAT_ID"];
-    const botToken = process.env["TG_BOT_TOKEN"];
-
-    if (!!chatId && !!botToken && err instanceof Error) {
-        const bot = new TelegramBot(botToken);
-        bot.sendMessage(
-            chatId,
-            `填报失败：\`${err.message}\``,
-            { "parse_mode": "Markdown" }
-        );
+})().catch((err) => {
+    if (isPushServicesConfigured() && err instanceof Error) {
+        pushNotification(`填报失败`, `${err.message}`);
         console.log(err);
     } else {
         throw err;
     }
-}).catch(err => {
+}).catch((err) => {
     if (err instanceof Error) {
         console.log(err.stack);
         core.setFailed(err.message);

@@ -38,5 +38,7 @@ jobs:
           BUPT_PASSWORD: ${{ secrets.BUPT_PASSWORD }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          PUSHDEER_KEY: ${{ secrets.PUSHDEER_KEY }}
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
           NTBA_FIX_319: 1
           NODE_TLS_REJECT_UNAUTHORIZED: 0
