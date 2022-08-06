@@ -1,9 +1,9 @@
 import * as core from "@actions/core";
 import got, { Got } from "got";
 import { CookieJar } from "tough-cookie";
-import TelegramBot from "node-telegram-bot-api";
 import { LoginForm, DailyReportForm, DailyReportResponse } from "./form.js";
-import { sleep, randomBetween, pushNotice } from "./utils.js";
+import { sleep, randomBetween } from "./utils.js";
+import { pushNotification, isPushServicesConfigured } from "./push.js";
 
 const LOGIN = "https://auth.bupt.edu.cn/authserver/login";
 const GET_REPORT = "https://app.bupt.edu.cn/ncov/wap/default/index";
@@ -58,7 +58,9 @@ async function login(
     return client;
 }
 
-async function getDailyReportFormData(client: Got): Promise<DailyReportForm> {
+async function getDailyReportFormData(
+    client: Got
+): Promise<DailyReportForm> {
     const response = await client.get(GET_REPORT);
     if (response.statusCode != 200) {
         throw new Error(`getFormData 请求返回了 ${response.statusCode}`);
@@ -149,10 +151,10 @@ async function postDailyReportFormData(
     const reportReponse = await postDailyReportFormData(client, formData);
 
     console.log(`今日填报结果：${reportReponse.m}`);
-    
-    if (reportReponse.m !== "今天已经填报了") {
-        await pushNotice(
-            `bupt-ncov:填报成功`,
+
+    if (isPushServicesConfigured() && reportReponse.m !== "今天已经填报了") {
+        await pushNotification(
+            `填报成功`,
             `
     今日填报结果：${reportReponse.m}
     上次填报时间：${formData.date}
@@ -160,17 +162,18 @@ async function postDailyReportFormData(
 `
         );
     }
-})()
-    .catch(async (err) => {
-        if (!!(await pushNotice(`bupt-ncov:填报失败`, `${err.message}`))) {
-            throw err;
-        }
-    })
-    .catch((err) => {
-        if (err instanceof Error) {
-            console.log(err.stack);
-            core.setFailed(err.message);
-        } else {
-            core.setFailed(err);
-        }
-    });
+})().catch((err) => {
+    if (isPushServicesConfigured() && err instanceof Error) {
+        pushNotification(`填报失败`, `${err.message}`);
+        console.log(err);
+    } else {
+        throw err;
+    }
+}).catch((err) => {
+    if (err instanceof Error) {
+        console.log(err.stack);
+        core.setFailed(err.message);
+    } else {
+        core.setFailed(err);
+    }
+});
