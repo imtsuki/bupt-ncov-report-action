@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
 
@@ -111,3 +110,5 @@ temp/
 # End of https://www.gitignore.io/api/node
 
 .DS_Store
+
+.vscode

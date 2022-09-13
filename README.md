@@ -7,6 +7,10 @@
 </p>
 
 <p align="center">
+  <strong>*旧版脚本用户（2022-03-31 之前），请更新以支持最新的 OAuth 登录。</strong>
+</p>
+
+<p align="center">
   <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/stars/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Stars"></a>
   <a href="https://github.com/imtsuki/bupt-ncov-report-action"><img src="https://img.shields.io/github/forks/imtsuki/bupt-ncov-report-action?style=social" alt="GitHub Forks"></a>
 </p>
@@ -16,8 +20,6 @@
 这个 Action 会自动在北京时间的每天 8:00 AM 进行填报。
 
 为了防止网络波动造成的失败，会间隔十分钟尝试六次。
-
-旧版脚本用户（2022-03-31 之前），请更新以支持最新的 OAuth 登录。
 
 ## 使用方法
 
@@ -60,6 +62,18 @@
 
 - `TG_BOT_TOKEN`: 你的 Bot 的 Token；
 - `TG_CHAT_ID`: 你和 Bot 的 Chat ID。
+
+### ServerChan
+
+[Server 酱](https://sct.ftqq.com/) 可以把填报结果推送到微信服务号或者企业微信内。你可以设置如下 Secret 发送结果：
+
+- `SERVERCHAN_KEY`: 你的 SendKey
+
+### PushDeer
+
+[PushDeer](http://www.pushdeer.com/) 可以推送至 iOS 下的 App Clip 中，无需安装额外应用：
+
+- `PUSHDEER_KEY`: 你的 PushDeer 的 Key
 
 ### `Timeout awaiting 'request' for 2000ms` 错误
 

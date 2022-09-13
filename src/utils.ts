@@ -1,6 +1,6 @@
 export async function sleep(ms: number): Promise<void> {
     console.log(`Sleep for ${ms}ms...`);
-    await new Promise(resolve => setTimeout(resolve, ms));
+    await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function randomBetween(min: number, max: number): number {
